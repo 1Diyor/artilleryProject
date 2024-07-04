@@ -1,9 +1,12 @@
-import {createEffect, createEvent, createStore, sample} from "effector";
-import {IViewLayer} from "@shared/model/layer";
-import {getLayer} from "@shared/api/layer";
+import { createEvent, createStore, sample, createEffect } from "effector";
+import { IViewLayer } from "@shared/model/layer";
+import { getLayer } from "../../shared/api/layer";
 
 export const addLayer = createEvent();
 export const selectLayer = createEvent<IViewLayer>();
+export const resetLayers = createEvent<IViewLayer[]>(); // Boshlangich stateni set qilish uchun yangi event
+
+
 
 export const addLayerFx = createEffect<void, IViewLayer, Error>(async () => {
     const layer = await getLayer();
@@ -22,7 +25,8 @@ export const $layers = createStore<IViewLayer[]>([])
 
             return layer;
         })
-    });
+    })
+    .on(resetLayers, (_, payload) => payload); 
 
 export const $selectedLayers = $layers.map(layers =>
     layers.filter(layer => layer.selected)
@@ -32,6 +36,3 @@ sample({
     clock: addLayer,
     target: addLayerFx
 });
-
-
-

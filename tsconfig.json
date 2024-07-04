@@ -35,5 +35,5 @@
   },
   "include": [
     "src"
-  ]
+, "jest.config.js"  ]
 }

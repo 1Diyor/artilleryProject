@@ -5,6 +5,8 @@ import {getProperties} from "@shared/api/property";
 export const addProperties = createEvent<string>();
 export const selectProperty = createEvent<IProperty>();
 
+
+
 export const fetchPropertiesFx = createEffect<string, IProperty[], Error>((layerName: string) => {
     return getProperties(layerName);
 });
