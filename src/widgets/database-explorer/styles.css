@@ -1,0 +1,11 @@
+.database-item {
+    cursor: pointer;
+}
+
+.database-item.selected {
+    background: aliceblue;
+}
+
+/*.database-item:hover {*/
+/*    background: aliceblue;*/
+/*}*/
