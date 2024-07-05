@@ -1,6 +1,6 @@
 import {createEffect, createEvent, createStore, sample} from "effector";
 import {IDatabase} from "@shared/model/database";
-import {getDatabase} from "@shared/api/database";
+import {getDatabase} from "../../shared/api/database";
 
 export const addDatabase = createEvent<void>();
 export const selectDatabase = createEvent<IDatabase>();
