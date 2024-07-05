@@ -1,7 +1,7 @@
 import { createEffect, createEvent, createStore, sample } from 'effector';
 import { IProperty } from '@shared/model/property';
 import { getProperties } from '../../shared/api/property';
-import {addProperties,selectProperty,fetchPropertiesFx,resetLayers,$properties,$selectedProperties} from '../../entities/property/index'; 
+import {addProperties,selectProperty,fetchPropertiesFx,resetLayerss,$properties,$selectedProperties} from '../../entities/property/index'; 
 
 // Мок API
 jest.mock('../../shared/api/property', () => ({
@@ -13,7 +13,7 @@ $properties.on(setInitialProperties, (_, payload) => payload);
 describe('Effector Store', () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    resetLayers();
+    resetLayerss();
   });
 
   test('fetchPropertiesFx 1 ta property qoshishi kerak', async () => {
@@ -75,7 +75,7 @@ describe('Effector Store', () => {
     $selectedProperties.on(selectProperty, () => [{ name: 'Property 1', value: 'Value 1' }]);
 
     // stateni tozalab chiqib ketyabman
-    resetLayers();
+    resetLayerss();
 
     // state ni tozalab chiqib ketgandan song rostan ham bosh ekanligini tekshirish
     expect($properties.getState()).toHaveLength(0);

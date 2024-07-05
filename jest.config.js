@@ -4,6 +4,13 @@ module.exports = {
   transform: {
     '^.+\\.tsx?$': 'ts-jest',
   },
+  testEnvironment: 'node',
+  setupFilesAfterEnv: ['jest-allure/dist/setup'],
+  reporters: [
+    'default',
+    'jest-allure'
+  ],
+
   testRegex: '(/__tests__/.*|(\\.|/)(test|spec))\\.(ts|tsx|js)?$',
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json', 'node'],
   moduleNameMapper: {
