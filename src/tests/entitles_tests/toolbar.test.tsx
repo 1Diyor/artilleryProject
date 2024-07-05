@@ -17,7 +17,7 @@ describe('Toolbar Effector Events and Stores', () => {
     expect(scope.getState($toolbarReshape)).toBe(false);
   });
 
-  test('annotate event should toggle $toolbarAnnotate state', async () => {
+  test('annotate eventi $toolbarAnnotate stateni togle qilish kerak', async () => {
     const scope = fork({
       values: new Map().set($toolbarAnnotate, false)
     });
@@ -31,7 +31,7 @@ describe('Toolbar Effector Events and Stores', () => {
     expect(scope.getState($toolbarAnnotate)).toBe(false);
   });
 
-  test('applyAction event should update $toolbarAction state', async () => {
+  test('applyAction event  $toolbarAction state update qilish kerak', async () => {
     const mockAction: ToolbarAction = ToolbarAction.Modify;
     const scope = fork();
 
