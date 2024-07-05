@@ -20,7 +20,6 @@ export const Toolbar: FC = () => {
     const setAction = (action: ToolbarAction) => {
         emit("APPLY_TOOLBAR_ACTION", action);
     }
-
     return (
         <Tabs
             defaultActiveKey="1"
