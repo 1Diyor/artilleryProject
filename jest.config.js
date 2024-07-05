@@ -13,6 +13,7 @@ module.exports = {
     '^@widgets/(.*)$': '<rootDir>/src/widgets/$1',
     '^@features/(.*)$': '<rootDir>/src/features/$1',
     '^@entities/(.*)$': '<rootDir>/src/entities/$1',
-    '^@shared/(.*)$': '<rootDir>/src/shared/$1'
+    '^@shared/(.*)$': '<rootDir>/src/shared/$1',
+    '^@tests/(.*)$': '<rootDir>/src/tests/$1'
   }
 };

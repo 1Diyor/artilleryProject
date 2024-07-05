@@ -1,4 +1,4 @@
-import React from "react";
+// import React from "react";
 
 // addLayer: yangi layer qoshish uchun event
 // selectLayer: layer tanlakishiga qaratilingan event
