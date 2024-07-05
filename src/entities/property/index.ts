@@ -4,7 +4,7 @@ import { getProperties } from '../../shared/api/property';
 
 export const addProperties = createEvent<string>();
 export const selectProperty = createEvent<IProperty>();
-export const resetLayers = createEvent(); // Событие для сброса состояний
+export const resetLayerss = createEvent(); 
 
 export const fetchPropertiesFx = createEffect<string, IProperty[], Error>((layerName: string) => {
     return getProperties(layerName);
@@ -12,7 +12,7 @@ export const fetchPropertiesFx = createEffect<string, IProperty[], Error>((layer
 
 export const $properties = createStore<IProperty[]>([])
     .on(fetchPropertiesFx.doneData, (state, payload) => [...state, ...payload])
-    .reset(resetLayers); // Добавляем сброс состояния
+    .reset(resetLayerss); 
 
 export const $selectedProperties = createStore<IProperty[]>([])
     .on(selectProperty, (state, payload) => {
@@ -23,7 +23,7 @@ export const $selectedProperties = createStore<IProperty[]>([])
         }
         return [...state, payload];
     })
-    .reset(resetLayers); // Добавляем сброс состояния
+    .reset(resetLayerss); 
 
 sample({
     clock: addProperties,

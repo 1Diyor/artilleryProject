@@ -33,6 +33,6 @@ export const $selectedLayers = $layers.map(layers =>
 );
 
 sample({
-    clock: addLayer,
+    clock: addLayer, // har safar qachon addlayer event chaqirilganda addLayerFx effect ishlasin
     target: addLayerFx
 });

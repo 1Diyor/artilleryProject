@@ -1,6 +1,6 @@
 import {createEffect, createEvent, createStore, sample} from "effector";
-import {IDataset} from "../../shared/model/dataset";
-import {getDataset} from "../../shared/api/dataset";
+import {IDataset} from "@shared/model/dataset";
+import {getDataset} from "@shared/api/dataset";
 
 export const addDataset = createEvent<string>();
 

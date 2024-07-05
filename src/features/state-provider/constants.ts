@@ -1,7 +1,7 @@
-import {$databases, $selectedDatabase, addDatabase, selectDatabase} from "../../entities/database/index";
-import {$layers, $selectedLayers, addLayer, selectLayer} from "../../entities/layer/index";
-import {$dataset, addDataset} from "../../entities/dataset/index";
-import {$properties, $selectedProperties, addProperties, selectProperty} from "../../entities/property/index";
+import {$databases, $selectedDatabase, addDatabase, selectDatabase} from "@entities/database";
+import {$layers, $selectedLayers, addLayer, selectLayer} from "@entities/layer";
+import {$dataset, addDataset} from "@entities/dataset";
+import {$properties, $selectedProperties, addProperties, selectProperty} from "@entities/property";
 import {
     $toolbarAction,
     $toolbarAnnotate,
@@ -10,8 +10,8 @@ import {
     applyAction,
     reshape,
     saveAll
-} from "../../entities/toolbar/index";
-import { $saveAll } from "../../entities/toolbar/connectons";
+} from "@entities/toolbar";
+import { $saveAll } from "@entities/toolbar/connectons";
 
 
 export const ACTIONS = {
