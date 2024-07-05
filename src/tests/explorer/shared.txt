@@ -1,0 +1,84 @@
+shared/api/database.ts:
+`import {IDatabase} from "../model/database";
+
+let dbIndex = 1;
+
+export const getDatabase = (): Promise<IDatabase> => {
+    return Promise.resolve({name: `Database${dbIndex++}`});
+}`
+
+shared/api/dataset.ts:
+`import {IDataset} from "../model/dataset";
+
+export const getDataset = (dbName: string): Promise<IDataset> => {
+    if (dbName === 'Database1') {
+        return Promise.resolve({
+            columns: ['Region', 'Country'],
+            rows: [['Europe', 'England'], ['Asia', 'Singapore'], ['South America', 'Brazil']]
+        });
+    }
+
+    const value = dbName.replace('Database', '');
+
+    return Promise.resolve({
+        columns: ['Name', 'Value'],
+        rows: [['Sales', `${value}000`], ['Quantity', `${value}000`], ['Profit', `${value}000`]]
+    });
+}`
+
+shared/api/layer.ts:
+`import {ILayer} from "../model/layer";
+
+let layerIndex = 1;
+
+export const getLayer = (): Promise<ILayer> => {
+    return Promise.resolve({name: `Layer${layerIndex++}`});
+}`
+
+shared/api/property.ts:
+`import {IProperty} from "../model/property";
+
+export const getProperties = (layerName: string): Promise<IProperty[]> => {
+    const value = layerName.replace('Layer', '');
+
+    return Promise.resolve([
+        {
+            name: `Min(${layerName})`,
+            value: value,
+        },
+        {
+            name: `Max(${layerName})`,
+            value: value,
+        },
+        {
+            name: `Avg(${layerName})`,
+            value: value,
+        }
+    ]);
+}`
+
+shared/model/database.ts:
+`export interface IDatabase {
+    name: string;
+}`
+
+shared/model/dataset.ts:
+`export interface IDataset {
+    columns: string[];
+    rows: string[][];
+}`
+
+shared/model/layer.ts:
+`export interface ILayer {
+    name: string;
+}
+
+export interface IViewLayer extends ILayer {
+    selected: boolean;
+}`
+
+shared/model/property.ts:
+`export interface IProperty {
+    name: string;
+    value: string;
+}`
