@@ -4,7 +4,7 @@ import { getLayer } from "../../shared/api/layer";
 
 export const addLayer = createEvent();
 export const selectLayer = createEvent<IViewLayer>();
-export const resetLayers = createEvent<IViewLayer[]>(); // Boshlangich stateni set qilish uchun yangi event
+export const resetLayers = createEvent<IViewLayer[]>(); 
 
 
 

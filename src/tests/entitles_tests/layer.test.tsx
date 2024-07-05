@@ -1,10 +1,9 @@
-import { createEvent, createStore, sample, createEffect } from "effector";
-import { IViewLayer } from "../shared/model/layer"; // Проверьте правильность пути
-import { getLayer } from "../shared/api/layer"; // Проверьте правильность пути
-import { addLayer, selectLayer, addLayerFx, $layers, $selectedLayers,resetLayers } from "../entities/layer/index"; 
+import { IViewLayer } from "../../shared/model/layer"; 
+import { getLayer } from "../../shared/api/layer"; 
+import { addLayer, selectLayer, addLayerFx, $layers, $selectedLayers,resetLayers } from "../../entities/layer/index"; 
 
 
-jest.mock("../shared/api/layer");// getlayer funcksiyasini mocklash
+jest.mock("../../shared/api/layer");// getlayer funcksiyasini mocklash
 
 describe("Modul Layer Effector", () => {
   const mockGetLayer = getLayer as jest.MockedFunction<typeof getLayer>;  //mocklash
