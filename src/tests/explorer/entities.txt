@@ -1,0 +1,183 @@
+entities/database/index.ts:
+`import {createEffect, createEvent, createStore, sample} from "effector";
+import {IDatabase} from "@shared/model/database";
+import {getDatabase} from "@shared/api/database";
+
+export const addDatabase = createEvent<void>();
+export const selectDatabase = createEvent<IDatabase>();
+
+export const addDatabaseFx = createEffect<void, IDatabase, Error>(() => {
+    return getDatabase();
+});
+
+export const $databases = createStore<IDatabase[]>([])
+    .on(addDatabaseFx.doneData, (state, payload) => [...state, payload]);
+
+export const $selectedDatabase = createStore<IDatabase>(null)
+    .on(selectDatabase, (state, payload) => payload);
+
+sample({
+    clock: addDatabase,
+    target: addDatabaseFx
+});`
+
+entities/dataset/index.ts:
+`import {createEffect, createEvent, createStore, sample} from "effector";
+import {IDataset} from "@shared/model/dataset";
+import {getDataset} from "@shared/api/dataset";
+
+export const addDataset = createEvent<string>();
+
+export const fetchDatasetFx = createEffect<string, IDataset, Error>((dbName: string) => {
+    return getDataset(dbName);
+});
+
+export const $dataset = createStore<IDataset>(null)
+    .on(fetchDatasetFx.doneData, (state, payload) => payload);
+
+sample({
+    clock: addDataset,
+    target: fetchDatasetFx
+});`
+
+entities/layer/index.ts:
+`import { createEvent, createStore, sample, createEffect } from "effector";
+import { IViewLayer } from "@shared/model/layer";
+import { getLayer } from "../../shared/api/layer";
+
+export const addLayer = createEvent();
+export const selectLayer = createEvent<IViewLayer>();
+export const resetLayers = createEvent<IViewLayer[]>(); // Boshlangich stateni set qilish uchun yangi event
+
+
+
+export const addLayerFx = createEffect<void, IViewLayer, Error>(async () => {
+    const layer = await getLayer();
+    const viewLayer: IViewLayer = {...layer, selected: false};
+
+    return viewLayer;
+});
+
+export const $layers = createStore<IViewLayer[]>([])
+    .on(addLayerFx.doneData, (state, payload) => [...state, payload])
+    .on(selectLayer, (state, payload) => {
+        return state.map(layer => {
+            if (layer.name === payload.name) {
+                return {...layer, selected: !layer.selected}
+            }
+
+            return layer;
+        })
+    })
+    .on(resetLayers, (_, payload) => payload); 
+
+export const $selectedLayers = $layers.map(layers =>
+    layers.filter(layer => layer.selected)
+);
+
+sample({
+    clock: addLayer,
+    target: addLayerFx
+});
+`
+
+entities/property/index.ts:
+`import {createEffect, createEvent, createStore, sample} from "effector";
+import {IProperty} from "@shared/model/property";
+import {getProperties} from "@shared/api/property";
+
+export const addProperties = createEvent<string>();
+export const selectProperty = createEvent<IProperty>();
+
+
+
+export const fetchPropertiesFx = createEffect<string, IProperty[], Error>((layerName: string) => {
+    return getProperties(layerName);
+});
+
+export const $properties = createStore<IProperty[]>([])
+    .on(fetchPropertiesFx.doneData, (state, payload) => [...state, ...payload]);
+
+export const $selectedProperties = createStore<IProperty[]>([])
+    .on(selectProperty, (state, payload) => {
+        const foundProperty = state.find(prop => prop.name === payload.name);
+
+        if (foundProperty) {
+            return state.filter(prop => foundProperty.name !== prop.name);
+        }
+
+        return [...state, payload];
+    });
+
+sample({
+    clock: addProperties,
+    target: fetchPropertiesFx
+});`
+
+entities/toolbar/connectons.ts:
+`import { combine, createStore, sample } from "effector";
+import { saveAll } from ".";
+import { $selectedDatabase, $selectedLayers, $selectedProperties } from "..";
+
+const combinedStore = combine(
+  $selectedDatabase,
+  $selectedLayers,
+  $selectedProperties,
+  (selectedDatabase, selectedLayers, selectedProperties) => ({
+    selectedDatabase,
+    selectedLayers,
+    selectedProperties,
+  })
+);
+
+const clockStore = sample({
+  clock: saveAll,
+  source: combinedStore,
+  target: createStore<any>(null) 
+});
+
+
+export const $saveAll = clockStore;
+`
+
+entities/toolbar/helper.ts:
+`import { IDatabase } from "@shared/model/database";
+import { IViewLayer } from "@shared/model/layer";
+import { IProperty } from "@shared/model/property";
+
+
+export const saveAllChanges = (selectedDatabase, selectedLayers) => {
+  console.log(selectedDatabase, selectedLayers);
+  
+  };`
+
+entities/toolbar/index.ts:
+`import { createEvent, createStore } from "effector";
+import { ToolbarAction } from "./types";
+
+export const reshape = createEvent<void>();
+export const annotate = createEvent<void>();
+export const saveAll = createEvent<any>();
+export const applyAction = createEvent<ToolbarAction>();
+
+export const $toolbarReshape = createStore<boolean>(false)
+    .on(reshape, (state, payload) => !state);
+export const $toolbarAnnotate = createStore<boolean>(false)
+    .on(annotate, (state, payload) => !state);
+
+export const $toolbarAction = createStore<ToolbarAction>(null)
+    .on(applyAction, (state, payload) => payload);`
+
+entities/toolbar/types.ts:
+`export enum ToolbarAction {
+    Modify = 'modify',
+    Create = 'create',
+    Delete = 'delete'
+}`
+
+entities/index.tsx:
+`export * from './database';
+export * from './dataset';
+export * from './layer';
+export * from './property';
+export * from './toolbar';`
