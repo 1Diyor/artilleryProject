@@ -1,55 +1,100 @@
 import { fork, allSettled } from 'effector';
-import { IDataset } from '@shared/model/dataset';
+import { addDataset,fetchDatasetFx,$dataset} from "../../entities/dataset/index";
+import {IDataset} from "../../shared/model/dataset"
 import { getDataset } from '../../shared/api/dataset';
-import { addDataset, fetchDatasetFx, $dataset } from '../../entities/dataset';
 
-// Мок API
 jest.mock('../../shared/api/dataset', () => ({
-  getDataset: jest.fn()
+    getDataset: jest.fn(),
+
 }));
 
-describe('Dataset uchun tekshirish', () => {
-  const mockGetDataset = getDataset as jest.MockedFunction<typeof getDataset>;
+const mockedDataset: IDataset = {
+    columns: ['Region', 'Country'],
+    rows: [
+        ['Europe', 'England'],
+        ['Asia', 'Singapore'],
+        ['South America', 'Brazil']
+    ]
+};
 
-  beforeEach(() => {
-    jest.clearAllMocks();
-  });
+const mockedDataset2: IDataset  = ({
+    columns: ['Name', 'Value'],
+    rows: [
+        ['Sales', `1000`],
+        ['Quantity', `1000`],
+        ['Profit', `1000`]
+    ]
+});
 
-  test('fetchDatasetFx datasetni update qilish kerak', async () => {
-    const mockDataset: IDataset = {
-      columns: ['Column1', 'Column2'],
-      rows: [
-        ['Row1Column1', 'Row1Column2'],
-        ['Row2Column1', 'Row2Column2']
-      ]
-    };
-    mockGetDataset.mockResolvedValueOnce(mockDataset);
-
-    const scope = fork();
-
-    // Effectni storeda izolatsiya qilish
-    await allSettled(fetchDatasetFx, { scope, params: 'TestDB' });
-
+describe('getDataset', () => {
+    afterEach( () => {
+            jest.resetAllMocks()
+        })
+    test('Mock getDataset function and check value truth', async () => {
+        (getDataset as jest.Mock).mockImplementation((dbName: string) => {
+            if (dbName === 'Database1') {
+                return Promise.resolve(mockedDataset);
+            }else{
+                return Promise.resolve(mockedDataset2);
+            }
+                
+        });
     
-    expect(scope.getState($dataset)).toEqual(mockDataset);
-  });
+        const result  = await getDataset("Database1");
+        // console.log("TEST =>  ")
+        // console.log("Value: " + JSON.stringify(result, null, 2));
+        // const dataset = scope.getState($dataset);
+        expect(result).toEqual(mockedDataset);
+    });    
+    test('Use mocked fuction by effector and check value truth', async () => {
+        (getDataset as jest.Mock).mockImplementation((dbName: string) => {
+            if (dbName === 'Database1') {
+                return Promise.resolve(mockedDataset);
+            }else{
+                return Promise.resolve(mockedDataset2);
+            }
+        });
+        const scope = fork();
 
-  test('addDataset should trigger fetchDatasetFx', async () => {
-    const mockDataset: IDataset = {
-      columns: ['Column1', 'Column2'],
-      rows: [
-        ['Row1Column1', 'Row1Column2'],
-        ['Row2Column1', 'Row2Column2']
-      ]
-    };
-    mockGetDataset.mockResolvedValueOnce(mockDataset);
+        const result  = await allSettled(fetchDatasetFx, {
+            scope,
+            params: 'Database1'
+        });
+        const result2  = await allSettled(fetchDatasetFx, {
+            scope,
+            params: 'Database'
+        });
+        // const dataset = scope.getState($dataset);
+        // console.log("TEST 2 =>  ")
+        // console.log("Status: " + result.status);
+        // console.log("Status2: " + result2.status);
+        // console.log("Value: " + JSON.stringify(result.value, null, 2));
+        // console.log("Value2: " + JSON.stringify(result2.value, null, 2));
+        // console.log("$dataset store => " + JSON.stringify(dataset,null,2));
+        expect(result.status).toBe('done');
+        expect(result2.status).toBe('done');
+        expect(result.value).toEqual(mockedDataset);
+        expect(result2.value).toEqual(mockedDataset2);
+    });
+    test('Add dataset to store using addDatase event', async () => {
+        (getDataset as jest.Mock).mockImplementation((dbName: string) => {
+            if (dbName === 'Database1') {
+                return Promise.resolve(mockedDataset);
+            } else {
+                return Promise.resolve(mockedDataset2);
+            }
+        });
 
-    const scope = fork();
+        const scope = fork();
 
-    // izolatsiyalangan kontekstda vajarish
-    await allSettled(addDataset, { scope, params: 'TestDB' });
-
-    //  state izolatsiya bolgan scopeda ozgarga yo ozgarmaganini tekshirish
-    expect(scope.getState($dataset)).toEqual(mockDataset);
-  });
+        await allSettled(addDataset, {
+            scope,
+            params: 'NewDataset'
+        });
+        // console.log("TEST 3 =>  ")
+        const dataset = scope.getState($dataset);
+        // console.log("$dataset store => " + JSON.stringify(dataset,null,2));
+        expect(dataset).toEqual(mockedDataset2);
+    });
+    
 });
